@@ -14,6 +14,7 @@
 # It echoes any incoming text messages.
 from telebot.types import Message
 import telebot
+from time import time
 
 API_TOKEN = '7113390199:AAGl_FzJs1zyFtsYkelcK97IRjnRyTsWhaE'
 
@@ -27,12 +28,15 @@ Hi there, I am EchoBot.
 I am here to echo your kind words back to you. Just say anything nice and I'll say the exact same thing to you!\
 """)
 
-@bot.message_handler(commands=['dice'])
-def play_dice(message: Message):
-    bot.send_dice(message.chat.id)
-    if message.dice.value > 3:
-        bot.send_message(message.chat.id, '>3')
-    else: bot.send_message(message.chat.id, '<3')
+@bot.message_handler(func=lambda message: True, content_types=['dice'])
+def play_dice(message):
+    dice_value = message.dice.value
+    if bot.send_dice(message.chat.id).dice.value < dice_value:
+        time.sleep()
+        bot.send_message(message.chat.id, 'user is winner')
+    else: 
+        time.sleep(5)
+        bot.send_message(message.chat.id, 'bot is winner')
 
 @bot.message_handler(commands=['sticker'])
 def send_random_sticker(message: Message):
